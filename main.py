@@ -2,14 +2,17 @@ import time
 
 from database_manager import DatabaseManager
 import paho.mqtt.client as mqtt
-import keyboard
 
-db_manager = DatabaseManager('localhost', 'ecommerce_532', 'root', 'andrestorres')
+db_manager = DatabaseManager('10.48.209.159', 'proyecto_xrover', 'profe', 'andrestorres')
 
 
 def on_message(client, userdata, msg):
-
-    print(f"Mensaje recibido {msg.payload.decode()} {msg.topic}")
+    msg = msg.payload.decode()
+    msg_split = msg.split("_")
+    sensor = msg_split[0]
+    valor = msg_split[1]
+    db_manager.insert_value(valor)
+    print(f"El sensor es: {sensor} valor: {valor}")
 
 
 unacked_publish = set()

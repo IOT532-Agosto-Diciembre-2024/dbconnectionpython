@@ -15,9 +15,9 @@ class DatabaseManager:
     def connect(self):
         try:
             self.connection = mysql.connector.connect(
-                host='localhost',
-                database='ecommerce_532',
-                user='root',
+                host='10.48.209.159',
+                database='proyecto_xrover',
+                user='profe',
                 password='andrestorres'
             )
             if self.connection.is_connected():
@@ -32,7 +32,7 @@ class DatabaseManager:
 
     def insert_producto(self, name, description, price, weight):
         query = """INSERT INTO producto (nombre, descripcion, precio, peso) VALUES (%s,%s,%s,%s)"""
-        values = (name, description,price, weight)
+        values = (name, description, price, weight)
         self.cursor.execute(query, values)
         self.connection.commit()
 
@@ -42,3 +42,9 @@ class DatabaseManager:
         result = self.cursor.fetchall()
         for row in result:
             print(row[1])
+
+    def insert_value(self, value):
+        query = """INSERT INTO ads1115 (analog_value, voltage) VALUES (%s,%s)"""
+        values = (value, "10")
+        self.cursor.execute(query, values)
+        self.connection.commit()
