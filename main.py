@@ -1,23 +1,37 @@
+import time
+
 from database_manager import DatabaseManager
+import paho.mqtt.client as mqtt
+import keyboard
 
-
-def print_menu():
-    print("Dame la opción que quieres \n0) Salir \n1) Insertar producto \n2) Mostrar productos\n")
-    return int(input())
-
-
-opcion = print_menu()
 db_manager = DatabaseManager('localhost', 'ecommerce_532', 'root', 'andrestorres')
-while opcion != 0:
-    if opcion == 1:
-        name = input("Dame el nombre: ")
-        description = input("Dame la descripción: ")
-        price = input("Dame el precio $")
-        weight = input("Dame el peso: ")
-        db_manager.insert_producto(name, description, price, weight)
-    if opcion == 2:
-        db_manager.list_products()
-    opcion = print_menu()
+
+
+def on_message(client, userdata, msg):
+
+    print(f"Mensaje recibido {msg.payload.decode()} {msg.topic}")
+
+
+unacked_publish = set()
+mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+
+mqtt_client.on_message = on_message
+
+mqtt_client.connect("broker.hivemq.com",1883)
+mqtt_client.loop_start()
+mqtt_client.subscribe("weccat/ultrasonido")
+
+try:
+    print("Esperando mensajes")
+    while True:
+        time.sleep(1)
+except:
+    print(f"Ocurrio un error")
+finally:
+    mqtt_client.loop_stop()
+    mqtt_client.disconnect()
+
+
 
 
 
